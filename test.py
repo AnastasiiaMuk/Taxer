@@ -22,6 +22,8 @@ button_add = driver.find_element(By.XPATH, '//button[@class="btn btn-primary"]')
 def assert_cert(line_num, name):
     list_item = driver.find_element(By.XPATH, '//div[@class="list-group mb-3"]/a[' + str(line_num) + ']')
     assert list_item.text == name
+    subject_cn = driver.find_element(By.XPATH, '//div[@class="card-body"]//td[1]')
+    assert subject_cn.text == name
 
 
 def add_cert(line_num, cert_file_name, expected_name):
