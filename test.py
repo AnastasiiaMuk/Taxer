@@ -19,29 +19,35 @@ button_run_this_project.click()
 button_add = driver.find_element(By.XPATH, '//button[@class="btn btn-primary"]')
 
 
-def assert_cert(line_num, name):
+def assert_cert(line_num, data):
     list_item = driver.find_element(By.XPATH, '//div[@class="list-group mb-3"]/a[' + str(line_num) + ']')
-    assert list_item.text == name
-    subject_cn = driver.find_element(By.XPATH, '//div[@class="card-body"]//td[1]')
-    assert subject_cn.text == name
+    assert list_item.text == data[0]
+    subject_cn = driver.find_element(By.XPATH, '//div[@class="card-body"]//tr[1]/td')
+    assert subject_cn.text == data[0]
+    issuer_cn = driver.find_element(By.XPATH, '//div[@class="card-body"]//tr[2]/td')
+    assert issuer_cn.text == data[1]
+    valid_from = driver.find_element(By.XPATH, '//div[@class="card-body"]//tr[3]/td')
+    assert valid_from.text == data[2]
+    valid_till = driver.find_element(By.XPATH, '//div[@class="card-body"]//tr[4]/td')
+    assert valid_till.text == data[3]
 
 
-def add_cert(line_num, cert_file_name, expected_name):
+def add_cert(line_num, cert_file_name, expected_data):
     button_add.click()
     path = project_root + '\\certs\\' + cert_file_name
     target = driver.find_element(By.XPATH, '//div[@class="card dropbox-panel"]')
     file_input = driver.execute_script(JS_DROP_FILE, target, 0, 0)
     file_input.send_keys(path)
-    assert_cert(line_num, expected_name)
+    assert_cert(line_num, expected_data)
 
 
-add_cert(1, 'cert.cer', 'Таксер Тест Тестерович')
+add_cert(1, 'cert.cer', ('Таксер Тест Тестерович', 'UA-22723472', '2015-04-08 21:00:00 UTC', '2017-04-08 21:00:00 UTC'))
 print('Pass 1')
 
-add_cert(2, 'cert2.cer', 'Лиференко')
+add_cert(2, 'cert2.cer', ('Лиференко', 'UA-39787008-2015', '2017-12-26 13:13:27 UTC', '2018-12-26 13:13:27 UTC'))
 print('Pass 2')
 
-add_cert(3, 'czo_2017.cer', 'UA-00015622-2017')
+add_cert(3, 'czo_2017.cer', ('UA-00015622-2017', 'UA-00015622-2017', '2017-09-22 07:19:00 UTC', '2027-09-22 07:19:00 UTC'))
 print('Pass 3')
 
 time.sleep(10)
